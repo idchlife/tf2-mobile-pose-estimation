@@ -24,8 +24,15 @@ import tensorflow as tf
 from config.model_config import ModelConfig
 from config.train_config import PreprocessingConfig
 from config.train_config import TrainConfig
+from config.paths_config import (DATASETS_PATH,
+                                 OUTPUT_PATH,
+                                 TRAIN_IMAGES_DIR_PATH,
+                                 TRAIN_ANNOTATIONS_JSON_FILEPATH,
+                                 VALID_IMAGES_DIR_PATH,
+                                 VALID_ANNOTATIONS_JSON_FILEPATH)
 
 from common import get_time_and_step_interval
+
 
 
 print("tensorflow version   :", tf.__version__) # 2.1.0
@@ -39,11 +46,11 @@ train_config.input_size = 256
 train_config.output_size = 64
 train_config.batch_size = 32
 
-dataset_path = "/Volumes/tucan-SSD/datasets/coco_dataset" # "/Volumes/tucan-SSD/datasets/ai_challenger"
+dataset_path = DATASETS_PATH # "/Volumes/tucan-SSD/datasets/ai_challenger"
 dataset_name = dataset_path.split("/")[-1]
 current_time = datetime.datetime.now().strftime("%m%d%H%M")
 output_model_name = "_sp-" + dataset_name
-output_path = "/Volumes/tucan-SSD/ml-project/simplepose/outputs"
+output_path = OUTPUT_PATH
 output_name = current_time + output_model_name
 
 
@@ -54,8 +61,8 @@ output_name = current_time + output_model_name
 from data_loader.data_loader import DataLoader
 
 # dataloader instance gen
-train_images_dir_path = os.path.join(dataset_path, "train2017")
-train_annotation_json_filepath = os.path.join(dataset_path, "annotations_trainval2017/person_keypoints_train2017.json")
+train_images_dir_path = TRAIN_IMAGES_DIR_PATH
+train_annotation_json_filepath = TRAIN_ANNOTATIONS_JSON_FILEPATH
 print(">> LOAD TRAIN DATASET FORM:", train_annotation_json_filepath)
 dataloader_train = DataLoader(
     images_dir_path=train_images_dir_path,
@@ -64,8 +71,8 @@ dataloader_train = DataLoader(
     model_config=model_config,
     preproc_config=preproc_config)
 
-valid_images_dir_path = os.path.join(dataset_path, "val2017")
-valid_annotation_json_filepath = os.path.join(dataset_path, "annotations_trainval2017/person_keypoints_val2017.json")
+valid_images_dir_path = VALID_IMAGES_DIR_PATH
+valid_annotation_json_filepath = VALID_ANNOTATIONS_JSON_FILEPATH
 print(">> LOAD VALID DATASET FORM:", valid_annotation_json_filepath)
 dataloader_valid = DataLoader(
     images_dir_path=valid_images_dir_path,

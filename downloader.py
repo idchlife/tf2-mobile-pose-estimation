@@ -10,7 +10,10 @@ import psutil
 import subprocess
 import time
 import re
+from config import paths_config
 
+
+paths_config.stop_execution_if_paths_not_configured()
 
 argv = sys.argv
 
@@ -39,24 +42,30 @@ disk_info = psutil.disk_usage("/")
 
 recommended_space_in_gb = 40
 
-download_path = "/home/datasets/"
+download_path = paths_config.DATASETS_PATH
 
-try:
-  arg_download_path = [a for a in argv if "--download-path" in a]
+# NOTE: since we are using .env variables for paths,
+# no need to use different path in cli arguments
+# DEPRECATED: to remove in future updates. Leaving commented code
+# just in case anyone would need to choose different path for downloading
 
-  if arg_download_path:
-    arg_download_path = arg_download_path[0]
-    if "=" in arg_download_path:
-      blob = arg_download_path.split("=")
-    else:
-      raise Exception("Proper format for option is: --download-path=/example/for/your/path")
+# try:
+
+  # arg_download_path = [a for a in argv if "--download-path" in a]
+
+  # if arg_download_path:
+  #   arg_download_path = arg_download_path[0]
+  #   if "=" in arg_download_path:
+  #     blob = arg_download_path.split("=")
+  #   else:
+  #     raise Exception("Proper format for option is: --download-path=/example/for/your/path")
   
-    download_path = blob[1]
-except Exception as e:
-  if debug:
-    traceback.print_exc()
-  log("It seems there was a problem with understanding your --download-path option. Please use --debug option to see the error")
-  sys.exit(0)
+#     download_path = blob[1]
+# except Exception as e:
+#   if debug:
+#     traceback.print_exc()
+#   log("It seems there was a problem with understanding your --download-path option. Please use --debug option to see the error")
+#   sys.exit(0)
 
 log("Welcome to datasets downloader!")
 sleep(1)

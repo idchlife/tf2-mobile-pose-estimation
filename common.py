@@ -13,7 +13,10 @@
 # ======================
 #-*- coding: utf-8 -*-
 
+import os
+import sys
 import datetime
+
 
 def get_time_and_step_interval(current_step, is_init=None):
     global before_step_and_time
@@ -46,3 +49,34 @@ def get_time_to_str(total_seconds):
     else:
         m, s = divmod(total_seconds, 60)
         return "%dm %02ds" % (m, int(s))
+
+
+class CachedResult:
+    env_loaded = False
+
+
+def load_env_file():
+    if CachedResult.env_loaded:
+        return
+
+    # Taken from here: https://stackoverflow.com/a/60878313/2739103
+    # And slightly modified
+    with open(os.path.join(os.getcwd(), ".env"), "r") as fh:
+        env_vars = dict()
+
+        for line in fh.readlines():
+            if not line.startswith("#"):
+                blob = line.split("=")
+                if len(blob) != 2:
+                    continue
+                k = blob[0]
+                v = blob[1].strip()
+
+                env_vars[k] = v
+
+    os.environ.update(env_vars)
+    CachedResult.env_loaded = True
+
+
+def is_debug():
+    return "--debug" in sys.argv
